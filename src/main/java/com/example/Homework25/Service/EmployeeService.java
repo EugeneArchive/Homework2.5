@@ -20,24 +20,30 @@ public class EmployeeService {
             new Employee("Karpunova", "Anna"),
             new Employee("Serebrova", "Natalia")
     };
-    private int size;
+    private int size = 10;
 
     public void addEmployee(String surname, String name) {
         if (size >= Employees.length) {
             throw new EmployeeStorageIsFullException("Список сотрудников заполнен. Добавление нового сотрудника невозможно.");
-        }
-        for (int i = 0; i < Employees.length; i++) {
-            if (surname.equals(Employees[i].getSurname()) && name.equals(Employees[i].getName())) {
-                throw new EmployeeAlreadyAddedException("Сотрудник уже есть в базе данных. Добавление невозможно.");
+        } else {
+            for (int i = 0; i < Employees.length; i++) {
+                if (Employees[i] == null) {
+                    continue;
+                }
+                if (surname.equals(Employees[i].getSurname()) && name.equals(Employees[i].getName())) {
+                    throw new EmployeeAlreadyAddedException("Сотрудник уже есть в базе данных. Добавление невозможно.");
+                }
             }
-            if (Employees[i] == null) {
-                Employee newEmployee = new Employee(surname, name);
-                Employees[i] = newEmployee;
-                size++;
-                return;
+            for (int i = 0; i < Employees.length; i++) {
+                if (Employees[i] == null) {
+                    Employee newEmployee = new Employee(surname, name);
+                    Employees[i] = newEmployee;
+                    size++;
+                }
             }
         }
     }
+
 
     public void deleteEmployeeFio(String surname, String name) {
         for (int i = 0; i < Employees.length; i++) {
@@ -48,6 +54,8 @@ public class EmployeeService {
                 Employees[i] = null;
                 size--;
                 break;
+            } else {
+                throw new EmployeeNotFoundException("Поиск завершен. Данного сотрудника нет в базе данных.");
             }
         }
     }
